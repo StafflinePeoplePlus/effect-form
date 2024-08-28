@@ -21,5 +21,8 @@
 	"dependencies": {
 		"@effect/schema": "^0.71.2",
 		"effect": "^3.6.6"
-	}
+	},
+	"files": [
+		"dist"
+	]
 }
