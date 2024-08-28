@@ -13,6 +13,7 @@
 		"release": "npm run package && changeset publish"
 	},
 	"devDependencies": {
+		"@changesets/cli": "^2.27.7",
 		"prettier": "^3.3.3",
 		"publint": "^0.2.10",
 		"typescript": "^5.5.4"
