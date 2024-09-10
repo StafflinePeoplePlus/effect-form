@@ -23,9 +23,13 @@ export const make = <A, I extends PrimitiveValueRecord, R, M extends Schema.Sche
 ) => new EffectForm({ fields, message });
 
 export class ValidatedForm<F extends EffectForm.Any> {
-	static decode<F extends EffectForm.Any>(formDef: F) {
+	static decode<F extends EffectForm.Any>(
+		formDef: F,
+	): (
+		data: unknown,
+	) => Effect.Effect<ValidatedForm<F>, ParseResult.ParseError, EffectForm.Context<F>> {
 		const parse = Schema.decodeUnknown(ValidatedForm.makeSchema(formDef));
-		return (data: unknown) =>
+		return (data) =>
 			parse(data).pipe(
 				Effect.andThen(
 					({ data, fields, message }) => new ValidatedForm(formDef, data, fields, message),
