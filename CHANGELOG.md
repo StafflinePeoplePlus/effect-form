@@ -1,5 +1,11 @@
 # @peopleplus/effect-form
 
+## 0.1.1
+
+### Patch Changes
+
+- 69437dc: add helper to convert from boolean literals to real booleans
+
 ## 0.1.0
 
 ### Minor Changes
