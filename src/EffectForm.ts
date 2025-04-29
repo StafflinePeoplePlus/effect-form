@@ -276,14 +276,20 @@ const validationFromJSONSchema = (schema: JSONSchema.JsonSchema7) => {
 			if (schema.pattern !== undefined) validation.pattern = schema.pattern;
 		}),
 		Match.when({ type: 'array', items: Predicate.isObject }, (schema) => {
-			Object.assign(validation, validationFromJSONSchema(schema.items));
+			if (Array.isArray(schema.items)) {
+				schema.items.forEach((item) => {
+					Object.assign(validation, validationFromJSONSchema(item));
+				});
+			} else {
+				Object.assign(validation, validationFromJSONSchema(schema.items));
+			}
 		}),
 		Match.when({ anyOf: Match.any }, (schema) => {
 			for (const subSchema of schema.anyOf) {
 				Object.assign(validation, validationFromJSONSchema(subSchema as JSONSchema.JsonSchema7));
 			}
 		}),
-		Match.when({ enum: (x) => x.includes(null) }, () => {
+		Match.when({ enum: (x: unknown) => Array.isArray(x) && x.includes(null) }, () => {
 			validation.required = false;
 		}),
 		Match.orElse(() => {}),
@@ -355,6 +361,8 @@ const fieldTypeFromJSONSchema: (schema: JSONSchema.JsonSchema7) => FieldType =
 			}
 			return FieldType.String({ emptyValue: '' });
 		}),
-		Match.when({ enum: (x) => x.includes(null) }, () => FieldType.String({ emptyValue: null })),
+		Match.when({ enum: (x: unknown[]) => x.includes(null) }, () =>
+			FieldType.String({ emptyValue: null }),
+		),
 		Match.orElse(() => FieldType.String({ emptyValue: '' })),
 	);
